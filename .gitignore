@@ -1,5 +1,82 @@
+# STM32 Project .gitignore
+
+# Build directories and artifacts
+build/
+Release/
+Debug/
+*.elf
+*.hex
+*.bin
+*.map
+*.list
+*.lss
+*.sym
+*.o
+*.a
+*.so
+*.dll
+*.exe
+
+# Object files and dependencies
+*.d
+*.su
+*.cyclo
+*.lst
+
+# IDE and editor files (keep .vscode for shared build configuration)
+# .vscode/
+.vs/
+*.code-workspace
+*.suo
+*.user
+*.sln.docstates
+
+# STM32CubeIDE specific
+.metadata/
+.recommenders/
+RemoteSystemsTempFiles/
+.project
+.cproject
+.settings/
+
+# Eclipse specific
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
+
+# Temporary files
+*~
+*.orig
+*.rej
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Archives
+*.tar
+*.tar.gz
+*.zip
+*.rar
+
+# Old/backup files
+*.old
 Core/Inc/key.h
 Core/Src/key.c.old
 Core/Src/main_old.c.old
-Debug/
-.vscode
+
+# Keep these important files (use ! to force include)
+!Makefile
+!*.ld
+!*.ioc
+!README.md
+!BUILD_SETUP.md
+!.gitignore

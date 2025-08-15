@@ -34,8 +34,8 @@ static const lr11xx_radio_pkt_params_lora_t lora_pkt_params = {
     .preamble_len_in_symb = 8,        // 8 symbols preamble
     .header_type = LR11XX_RADIO_LORA_PKT_EXPLICIT,
     .pld_len_in_bytes = SIMPLE_PAYLOAD_LENGTH,
-    .crc_is_on = true,
-    .invert_iq_is_on = false
+    .crc = LR11XX_RADIO_LORA_CRC_ON,
+    .iq = LR11XX_RADIO_LORA_IQ_STANDARD
 };
 
 /* Private function prototypes */
@@ -130,7 +130,7 @@ static void init_radio(void) {
     lr11xx_radio_set_lora_sync_word(NULL, 0x11);
     
     // Set TX power to +2 dBm
-    lr11xx_radio_set_tx_params(NULL, 2, LR11XX_RADIO_RAMP_40_US);
+    lr11xx_radio_set_tx_params(NULL, 2, LR11XX_RADIO_RAMP_48_US);
     
     // Configure DIO for TX done interrupt
     lr11xx_system_set_dio_irq_params(NULL, 
@@ -173,7 +173,7 @@ static void transmit_packet(void) {
     uint32_t irq_status = 0;
     
     while (HAL_GetTick() < timeout) {
-        if (lr11xx_system_get_and_clear_irq_status(NULL, &irq_status) == LR11XX_HAL_STATUS_OK) {
+        if (lr11xx_system_get_and_clear_irq_status(NULL, &irq_status) == LR11XX_STATUS_OK) {
             if (irq_status & LR11XX_SYSTEM_IRQ_TX_DONE) {
                 break;  // Transmission completed
             }

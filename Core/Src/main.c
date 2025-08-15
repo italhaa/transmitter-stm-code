@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 
 #include "lora_simple_beacon.h"
+#include "lora_base.h"
 
 /* USER CODE END Includes */
 

@@ -30,9 +30,6 @@
 #define LED_STATUS_GPIO_Port        LR_LED_SCAN_GPIO_Port
 #define LED_STATUS_Pin              LR_LED_SCAN_Pin
 
-#define LR_RESET_GPIO_Port          LR_RESET_GPIO_Port
-#define LR_RESET_Pin                LR_RESET_Pin
-
 /* Function prototypes */
 
 /**

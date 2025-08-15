@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "STM32 Debug",
+            "type": "cortex-debug",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/build/LR1121.v4.elf",
+            "device": "STM32L476RG",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32l4x.cfg"
+            ],
+            "svdFile": "${workspaceFolder}/.vscode/STM32L4x6.svd",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "parsed",
+            "preLaunchTask": "Build STM32 Project"
+        }
+    ]
+}
