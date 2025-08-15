@@ -38,6 +38,14 @@ static const lr11xx_radio_pkt_params_lora_t lora_pkt_params = {
     .iq = LR11XX_RADIO_LORA_IQ_STANDARD
 };
 
+/* 2.4GHz Power Amplifier configuration - CRITICAL for 2.4GHz transmission */
+static const lr11xx_radio_pa_cfg_t pa_config_2p4G = {
+    .pa_sel = LR11XX_RADIO_PA_SEL_HF,           // High Frequency PA for 2.4GHz
+    .pa_reg_supply = LR11XX_RADIO_PA_REG_SUPPLY_VREG,
+    .pa_duty_cycle = 0x00,
+    .pa_hp_sel = 0x00
+};
+
 /* Private function prototypes */
 static void init_radio(void);
 static void prepare_packet(void);
@@ -119,6 +127,9 @@ static void init_radio(void) {
     
     // Set RF frequency to 2.444 GHz
     lr11xx_radio_set_rf_freq(NULL, 2444000000UL);
+    
+    // CRITICAL: Set 2.4GHz Power Amplifier configuration
+    lr11xx_radio_set_pa_cfg(NULL, &pa_config_2p4G);
     
     // Set modulation parameters
     lr11xx_radio_set_lora_mod_params(NULL, &lora_mod_params);
