@@ -212,7 +212,7 @@ void lora_system_init(void){
         */
         mode = MODE_HUB;
     }
-    #define PI // overrides the serial number based hub assignment above
+    //#define PI // overrides the serial number based hub assignment above
 	#ifdef PI
     mode = MODE_HUB;
 	#endif

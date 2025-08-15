@@ -22,7 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include "lora_base.h"
+#include "lora_simple_beacon.h"
 
 /* USER CODE END Includes */
 
@@ -121,18 +121,23 @@ int main(void)
   MX_TIM6_Init();
   /* USER CODE BEGIN 2 */
 
+  printf("\n=== Simple LoRa Beacon Transmitter ===\n");
+  printf("Initializing...\n");
+  
+  // Initialize the simple beacon system
+  simple_beacon_init();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  HAL_TIM_Base_Start_IT(&htim6);
-  lora_system_init();
-
   while (1){
-
-    lora_system_process();
-
+    // Simple beacon processing - transmits every 3 seconds
+    simple_beacon_process();
+    
+    // Small delay to prevent excessive CPU usage
+    HAL_Delay(10);
   }
 
     /* USER CODE END WHILE */
