@@ -19,7 +19,7 @@
 #include "../../Drivers/lr11xx_driver/src/lr11xx_hal.h"
 
 /* Configuration */
-#define SIMPLE_PAYLOAD_LENGTH       150     // 150 bytes as requested
+#define SIMPLE_PAYLOAD_LENGTH       7       // Fixed payload length for "TEST123"
 #define TRANSMISSION_INTERVAL_MS    3000    // 3 seconds as requested
 
 /* GPIO pin definitions - using actual LR1121 dev kit pins */

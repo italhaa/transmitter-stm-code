@@ -62,8 +62,8 @@ void simple_beacon_init(void) {
     
     printf("Simple LoRa Beacon Initialized\n");
     printf("Device ID: 0x%08lX\n", device_id);
-    printf("Transmitting %d bytes every %d seconds at 2.4GHz\n", 
-           SIMPLE_PAYLOAD_LENGTH, TRANSMISSION_INTERVAL_MS/1000);
+    printf("Transmitting fixed payload '%s' (%d bytes) every %d seconds at 2.4GHz\n", 
+           "TEST123", SIMPLE_PAYLOAD_LENGTH, TRANSMISSION_INTERVAL_MS/1000);
 }
 
 /**
@@ -72,19 +72,27 @@ void simple_beacon_init(void) {
 void simple_beacon_process(void) {
     uint32_t current_time = HAL_GetTick();
     
+    // Simple scan LED heartbeat (trigger once per second while idle)
+    static uint32_t last_scan_led_time = 0;
+    extern uint8_t enable_ui_scan; // from lora_base.c for LED handling
+    if (current_time - last_scan_led_time >= 1000) {
+        enable_ui_scan = 1;
+        last_scan_led_time = current_time;
+    }
+
     // Check if it's time to transmit
     if (current_time - last_transmission_time >= TRANSMISSION_INTERVAL_MS) {
-        // Update packet data
+        // Update packet data (fixed content)
         prepare_packet();
-        
+
         // Transmit the packet
         transmit_packet();
-        
+
         // Update timing
         last_transmission_time = current_time;
         packet_counter++;
-        
-        printf("Packet %lu transmitted\n", packet_counter);
+
+        printf("Packet %lu transmitted (TEST123)\n", packet_counter);
     }
 }
 
@@ -137,39 +145,9 @@ static void init_radio(void) {
  * @brief Prepare the packet data
  */
 static void prepare_packet(void) {
-    // Clear buffer
-    memset(tx_buffer, 0, SIMPLE_PAYLOAD_LENGTH);
-    
-    // Header: Device ID (4 bytes)
-    tx_buffer[0] = (device_id >> 0) & 0xFF;
-    tx_buffer[1] = (device_id >> 8) & 0xFF;
-    tx_buffer[2] = (device_id >> 16) & 0xFF;
-    tx_buffer[3] = (device_id >> 24) & 0xFF;
-    
-    // Packet counter (4 bytes)
-    tx_buffer[4] = (packet_counter >> 0) & 0xFF;
-    tx_buffer[5] = (packet_counter >> 8) & 0xFF;
-    tx_buffer[6] = (packet_counter >> 16) & 0xFF;
-    tx_buffer[7] = (packet_counter >> 24) & 0xFF;
-    
-    // Timestamp (4 bytes)
-    uint32_t timestamp = HAL_GetTick();
-    tx_buffer[8] = (timestamp >> 0) & 0xFF;
-    tx_buffer[9] = (timestamp >> 8) & 0xFF;
-    tx_buffer[10] = (timestamp >> 16) & 0xFF;
-    tx_buffer[11] = (timestamp >> 24) & 0xFF;
-    
-    // Pattern data for the rest of the packet
-    for (int i = 12; i < SIMPLE_PAYLOAD_LENGTH; i++) {
-        tx_buffer[i] = (uint8_t)(i ^ (packet_counter & 0xFF));
-    }
-    
-    // Add simple checksum in last byte
-    uint8_t checksum = 0;
-    for (int i = 0; i < SIMPLE_PAYLOAD_LENGTH - 1; i++) {
-        checksum ^= tx_buffer[i];
-    }
-    tx_buffer[SIMPLE_PAYLOAD_LENGTH - 1] = checksum;
+    // Fixed ASCII payload "TEST123"
+    const char *msg = "TEST123"; // 7 bytes
+    memcpy(tx_buffer, msg, SIMPLE_PAYLOAD_LENGTH);
 }
 
 /**
@@ -182,8 +160,10 @@ static void transmit_packet(void) {
     // Load packet into radio buffer
     lr11xx_regmem_write_buffer8(NULL, tx_buffer, SIMPLE_PAYLOAD_LENGTH);
     
-    // Turn on TX LED
+    // Turn on TX LED and flag UI tx event for blinking logic in main
     update_leds(true);
+    extern uint8_t enable_ui_tx; // from lora_base.c
+    enable_ui_tx = 1;
     
     // Start transmission
     lr11xx_radio_set_tx(NULL, 0);  // 0 = no timeout
